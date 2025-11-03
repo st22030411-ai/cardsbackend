@@ -1,0 +1,102 @@
+import express from "express";
+import { connectDB } from "./db.js";
+import { Card } from "./models/Card.js";
+
+const app = express();
+connectDB();
+
+app.use(express.json());
+
+//  CREATE
+app.post("/createCard", async (req, res) => {
+  try {
+    const card = await Card.create(req.body);
+    res.status(201).json({ message: "Card created successfully", card });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error creating card");
+  }
+});
+
+// GET ALL
+app.get("/getAllCards", async (req, res) => {
+  try {
+    const cards = await Card.find();
+    res.status(200).json(cards);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving cards");
+  }
+});
+
+// GET 
+app.get("/getCard/:id", async (req, res) => {
+  try {
+    const card = await Card.findById(req.params.id);
+    if (!card) return res.status(404).send("Card not found");
+    res.status(200).json(card);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving card");
+  }
+});
+
+// UPDATE (PUT)
+app.put("/updateCard/:id", async (req, res) => {
+  try {
+    const updated = await Card.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      overwrite: true,
+    });
+    if (!updated) return res.status(404).send("Card not found");
+    res.status(200).json({ message: "Card fully updated", updated });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating card");
+  }
+});
+
+// UPDATE PARTIAL (PATCH)
+app.patch("/updateCardPartial/:id", async (req, res) => {
+  try {
+    const updated = await Card.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!updated) return res.status(404).send("Card not found");
+    res.status(200).json({ message: "Card partially updated", updated });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating card");
+  }
+});
+
+//DELETE
+app.delete("/deleteCard/:id", async (req, res) => {
+  try {
+    const deleted = await Card.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send("Card not found");
+    res.status(200).json({ message: "Card deleted successfully", deleted });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error deleting card");
+  }
+});
+
+//  REVIEW
+app.get("/review", (req, res) => {
+  const endpoints = [
+    "POST   /createCard",
+    "GET    /getAllCards",
+    "GET    /getCard/:id",
+    "PUT    /updateCard/:id",
+    "PATCH  /updateCardPartial/:id",
+    "DELETE /deleteCard/:id",
+    "GET    /review"
+  ];
+  res.status(200).send(`Available endpoints:\n\n${endpoints.join("\n")}`);
+});
+
+
+app.listen(3000, () => {
+  console.log("Servidor ejecutándose en http://localhost:3000");
+});
