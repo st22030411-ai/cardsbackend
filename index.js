@@ -7,7 +7,7 @@ connectDB();
 
 app.use(express.json());
 
-//  CREATE
+
 app.post("/createCard", async (req, res) => {
   try {
     const card = await Card.create(req.body);
@@ -18,7 +18,7 @@ app.post("/createCard", async (req, res) => {
   }
 });
 
-// GET ALL
+
 app.get("/getAllCards", async (req, res) => {
   try {
     const cards = await Card.find();
@@ -29,7 +29,7 @@ app.get("/getAllCards", async (req, res) => {
   }
 });
 
-// GET 
+
 app.get("/getCard/:id", async (req, res) => {
   try {
     const card = await Card.findById(req.params.id);
@@ -41,7 +41,7 @@ app.get("/getCard/:id", async (req, res) => {
   }
 });
 
-// UPDATE (PUT)
+
 app.put("/updateCard/:id", async (req, res) => {
   try {
     const updated = await Card.findByIdAndUpdate(req.params.id, req.body, {
@@ -56,7 +56,7 @@ app.put("/updateCard/:id", async (req, res) => {
   }
 });
 
-// UPDATE PARTIAL (PATCH)
+
 app.patch("/updateCardPartial/:id", async (req, res) => {
   try {
     const updated = await Card.findByIdAndUpdate(req.params.id, req.body, {
@@ -70,7 +70,7 @@ app.patch("/updateCardPartial/:id", async (req, res) => {
   }
 });
 
-//DELETE
+
 app.delete("/deleteCard/:id", async (req, res) => {
   try {
     const deleted = await Card.findByIdAndDelete(req.params.id);
@@ -82,7 +82,7 @@ app.delete("/deleteCard/:id", async (req, res) => {
   }
 });
 
-//  REVIEW
+
 app.get("/review", (req, res) => {
   const endpoints = [
     "POST   /createCard",
