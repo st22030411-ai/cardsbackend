@@ -101,6 +101,24 @@ app.get("/review", (req, res) => {
   res.status(200).send(`Available endpoints:\n\n${endpoints.join("\n")}`);
 });
 
+app.patch("/updateLike/:id", async (req, res) => {
+  try {
+    const card = await Card.findById(req.params.id);
+
+    if (!card) {
+      return res.status(404).json({ message: "Card not found" });
+    }
+
+    card.like = !card.like;
+
+
+    await card.save();
+
+    res.json(card);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(3000, () => {
   console.log("Servidor ejecutándose en http://localhost:3000");
